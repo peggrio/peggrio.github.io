@@ -30,7 +30,10 @@ peggy_liao@163.com
 Guangzhou,CN
       </td>
     <td width="30%">
-      <img src="/202114.jpg" width="100%" top:150px>    
+      <span class="01"> <img src="/202114.jpg" style=" width:150px; height="150px"> </span>
+        <!--
+        <img src="/202114.jpg" width="100%" top:150px>
+        -->
     </td>
   </tr>
 </table>
