@@ -1,3 +1,5 @@
+<!--this is english version-->
+<a href="/index-cn.html">中文版</a>
 ## Welcome to Peggy's Pages
 Hi! This is Peggy, an undergraduate studying in Guangzhou, China. Nice to meet you on GitHub!:wink:
 <!--
