@@ -1,19 +1,3 @@
-<html>
-<head>
-<style type="text/css">   <! 设置图片的属性>
-img{     
-  position:absolute;   <! 绝对位移>
-  left:300px;
-  top:150px;
- <!  width="1000px"; 这里设置图片宽度，但是并没有成功>
- <! height="400px";这里设置图片高度，  但是并没有成功 建议使用下面的方法来调增宽度>
-  }  <! 图像的属性，包括位置，x,y方向的坐标 >
-</style>
-</head>
-<body>
-
-
-
 ## Welcome to Peggy's Pages
 Hi! This is Peggy, an undergraduate studying in Guangzhou, China. Nice to meet you on GitHub!:wink:
 <!--
@@ -46,11 +30,11 @@ peggy_liao@163.com
 Guangzhou,CN
       </td>
     <td width="30%">
-      <img src="/202114.jpg" width="100%">    
+      <img src="/202114.jpg" width="100%" top:150px>    
     </td>
   </tr>
 </table>
-</body>
+
 <!--
 try **hey** in this sentence!
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
