@@ -1,5 +1,5 @@
 <!--this is chinese version-->
-<a href="/index.html">English Version</a>
+<a href="/index-en.html">English Version</a>
 ## 欢迎来到Peggy的主页！
 
 啊喽哈！我是Peggy，一名在中国广州上学的本科生。很高兴在GitHub认识你！:wink:
