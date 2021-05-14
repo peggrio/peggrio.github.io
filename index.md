@@ -15,16 +15,25 @@ You can use the [editor on GitHub](https://github.com/peggrio/peggrio.github.io/
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 -->
 ## About me
-### Name
+<table border="0">
+  <tr>
+    <td width="50%">
+<h3> Name </h3>
 Peggy
-### Educational Background
+<h3> Educational Background </h3>
 Undergraduate
-### Institutions of study
+<h3> Institutions of study</h3>
 Bilibili University
-### Email
+<h3> Email</h3>
 peggy_liao@163.com
-### Address
+<h3>Address</h3>
 Guangzhou,CN
+      </td>
+    <td width="30%">
+      <img src="/202114.jpg" width="100%">    
+    </td>
+  </tr>
+</table>
 
 <!--
 try **hey** in this sentence!
