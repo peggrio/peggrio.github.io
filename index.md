@@ -1,5 +1,8 @@
 ## Welcome to Peggy's Pages
-Hi! This is Peggy, an undergraduate studying in Guangzhou, China. Nice to meet you on GitHub!:superhero:
+Hi! This is Peggy, an undergraduate studying in Guangzhou, China. Nice to meet you on GitHub!:wink:
+<!--
+sad, the emoji :superhero: doesn't show up in browser
+-->
 
 I major in Chemistry, but I found a great passion in coding and computing related. 
 
