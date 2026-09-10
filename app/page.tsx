@@ -82,30 +82,36 @@ export default function Home() {
     };
   }, []);
 
-  return <main>
-    <div className="portrait" aria-hidden="true">
+  return <>
+    <a className="skip-link" href="#main-content">Skip to main content</a>
+    <header className={`site-header${storyActive ? ' site-header--story' : ''}`}>
+      <a href="#home" className="wordmark" aria-label="Peizhen Liao — Home">{profile.monogram}<span className="mark-dot" aria-hidden="true" /></a>
+      <span className="header-caption" aria-hidden="true">A PERSONAL PORTRAIT</span>
+      <nav aria-label="Primary">
+        <a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Undergraduate</a>
+        <a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Graduate</a>
+        <a href="#experience" aria-current={scene?.id === 'experience' ? 'location' : undefined} className="contact-link">Experience <ArrowUpRight size={16} aria-hidden="true" /></a>
+      </nav>
+    </header>
+    <main id="main-content" tabIndex={-1}>
+      <div className="portrait" aria-hidden="true">
       <video ref={videoRef} src="/portrait-interactive.mp4" poster="/portrait-poster.jpg" preload="auto" muted playsInline autoPlay={false} disablePictureInPicture controls={false} />
       <div className="portrait-shade" />
-    </div>
+      </div>
     <section ref={heroRef} className="hero" id="home" aria-label="Interactive portrait. Use the left and right arrow keys to turn the portrait." tabIndex={0} onKeyDown={e => {
       if (e.target !== e.currentTarget || window.scrollY > 0) return;
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault(); controlsRef.current?.moveBy(e.key === 'ArrowRight' ? 40 : -40, window.innerWidth);
       }
     }}>
-      <header className="header">
-        <a href="#home" className="wordmark" aria-label="Peizhen Liao — Home">{profile.monogram}<span className="mark-dot" /></a>
-        <span className="header-caption">A PERSONAL PORTRAIT</span>
-        <nav aria-label="Main navigation"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a><a href="#experience" className="contact-link">Experience <ArrowUpRight size={16} /></a></nav>
-      </header>
       <div className="edition"><span className="tiny-line" /> PORTFOLIO — 2026</div>
       <div className="hero-content">
         <div className="hero-title"><p className="eyebrow">HELLO, I’M</p><h1>{profile.name}</h1><p className="role">{profile.role}</p><p className="specialization">{profile.specialization}</p></div>
         <div className="hero-note"><span className="note-symbol">✳</span><p>From interface<br />to infrastructure.</p><a href="#publications">Explore my story <ArrowDown size={17} /></a></div>
       </div>
       <footer className="hero-footer">
-        <a href="#publications" className="discover">Scroll to explore <ArrowDown size={15} /></a>
-        <div className="motion-cue"><MoveHorizontal size={21} strokeWidth={1.3} /><span role="status">{status === 'loading' ? 'Preparing your portrait' : status === 'error' ? 'Video unavailable · Static portrait' : 'Move left or right to turn the portrait'}</span></div>
+        <a href="#publications" className="discover">Scroll to explore <ArrowDown size={15} aria-hidden="true" /></a>
+        <div className="motion-cue"><MoveHorizontal size={21} strokeWidth={1.3} aria-hidden="true" /><span role="status" aria-live="polite">{status === 'loading' ? 'Preparing your portrait' : status === 'error' ? 'Video unavailable · Static portrait' : 'Move left or right to turn the portrait'}</span></div>
         <span className="frame-label">INTERACTIVE PORTRAIT <span>01 / 04</span></span>
       </footer>
     </section>
@@ -136,12 +142,16 @@ export default function Home() {
           <div className="experience-cards">{profile.experience.map(item => <article className="scene-panel experience-panel" key={item.id}>
             <div className="experience-meta"><span>EXPERIENCE {item.id}</span><span>{item.period}</span></div><h3>{item.title}</h3><p className="organization">{item.organization}</p><p className="experience-description">{item.description}</p>
           </article>)}</div>
-          <footer className="story-contact"><span>Let’s build something together.</span>{profile.email ? <a href={`mailto:${profile.email}`}>{profile.email} <ArrowUpRight size={16} /></a> : <span className="email-placeholder">[Your email address]</span>}<a href="#home">Back to top ↑</a></footer>
         </div>}
       </section>}
     </div>
-    {storyActive && <div className="story-toolbar"><a href="#home" aria-label="Back to Peizhen Liao’s portrait">PL<span> / {scene?.id === 'publications' ? 'UNDERGRADUATE' : scene?.id === 'education' ? 'GRADUATE' : scene?.id ?? 'THE STORY'}</span></a><nav aria-label="Story navigation"><a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Undergraduate</a><a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Graduate</a><a href="#experience" aria-current={scene?.id === 'experience' ? 'location' : undefined}>Experience</a></nav></div>}
-    {storyActive && <p className="story-scroll-hint"><ArrowDown size={14} /> Scroll to move through the story</p>}
+    {storyActive && scene?.id !== 'experience' && <p className="story-scroll-hint"><ArrowDown size={14} aria-hidden="true" /> Scroll to move through the story</p>}
     <div className="film-progress" aria-hidden="true"><span ref={progressRef} /></div>
-  </main>;
+    </main>
+    {storyActive && scene?.id === 'experience' && <footer className="site-footer">
+      <p><strong>Peizhen Liao</strong><span>Software Engineer · Full Stack / SRE</span></p>
+      <nav aria-label="Footer"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a>{profile.email && <a href={`mailto:${profile.email}`}>Email</a>}</nav>
+      <p><span>© 2026 Peizhen Liao</span><a href="#home">Back to top <span aria-hidden="true">↑</span></a></p>
+    </footer>}
+  </>;
 }
