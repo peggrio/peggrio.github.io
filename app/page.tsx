@@ -140,7 +140,11 @@ export default function Home() {
         {scene.id === 'experience' && <div className="experience-layout">
           <div className="experience-heading"><p className="section-kicker">03 / EXPERIENCE</p><h2 id="experience-heading">Building what’s next.</h2></div>
           <div className="experience-cards">{profile.experience.map(item => <article className="scene-panel experience-panel" key={item.id}>
-            <div className="experience-meta"><span>EXPERIENCE {item.id}</span><span>{item.period}</span></div><h3>{item.title}</h3><p className="organization">{item.organization}</p><p className="experience-description">{item.description}</p>
+            <div className="experience-meta"><span>EXPERIENCE {item.id}</span><time>{item.period}</time></div>
+            <h3>{item.title}</h3>
+            <p className="organization">{item.href ? <a href={item.href} target="_blank" rel="noreferrer">{item.organization}<ArrowUpRight size={13} aria-hidden="true" /></a> : item.organization}</p>
+            <p className="experience-location">{item.location}</p>
+            <p className="experience-description">{item.description}</p>
           </article>)}</div>
         </div>}
       </section>}
