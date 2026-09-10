@@ -96,7 +96,7 @@ export default function Home() {
       <header className="header">
         <a href="#home" className="wordmark" aria-label="Peizhen Liao — Home">{profile.monogram}<span className="mark-dot" /></a>
         <span className="header-caption">A PERSONAL PORTRAIT</span>
-        <nav aria-label="Main navigation"><a href="#publications">Writing</a><a href="#education">Education</a><a href="#experience" className="contact-link">Experience <ArrowUpRight size={16} /></a></nav>
+        <nav aria-label="Main navigation"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a><a href="#experience" className="contact-link">Experience <ArrowUpRight size={16} /></a></nav>
       </header>
       <div className="edition"><span className="tiny-line" /> PORTFOLIO — 2026</div>
       <div className="hero-content">
@@ -117,18 +117,19 @@ export default function Home() {
     <div className="story-overlay" data-scene={scene?.id ?? 'none'}>
       {scene && <section className={`scene scene-${scene.id}`} aria-labelledby={`${scene.id}-heading`} style={{ opacity: scene.opacity, transform: `translateY(${scene.offset}px)` }}>
         {scene.id === 'publications' && <div className="scene-panel publications-panel">
-          <p className="section-kicker">01 / PUBLICATIONS</p>
-          <h2 id="publications-heading">On paper.</h2>
-          <p className="scene-intro">Ideas, research &amp; writing.</p>
-          <ol className="publication-list">{profile.publications.map((publication, index) => <li key={publication.title}><span className="item-number">0{index + 1}</span><div><h3>{publication.title}</h3><p>{publication.detail}</p></div></li>)}</ol>
+          <p className="section-kicker">01 / UNDERGRADUATE EDUCATION</p>
+          <h2 id="publications-heading">Where two disciplines met.</h2>
+          <p className="scene-intro">{profile.undergraduate.introduction}</p>
+          <ol className="publication-list">{profile.undergraduate.work.map((item, index) => <li key={item.title}><span className="item-number">0{index + 1}</span><div><p className="work-type">{item.type}</p><h3>{item.href ? <a href={item.href} target="_blank" rel="noreferrer">{item.title}<ArrowUpRight size={13} /></a> : item.title}</h3>{item.description && <p>{item.description}</p>}</div></li>)}</ol>
           <svg className="paper-leader" viewBox="0 0 260 140" aria-hidden="true"><path d="M0 10 H90 L245 125" /><circle cx="245" cy="125" r="5" /></svg>
         </div>}
         {scene.id === 'education' && <div className="scene-panel education-panel">
-          <p className="section-kicker">02 / EDUCATION</p>
+          <p className="section-kicker">02 / GRADUATE EDUCATION</p>
           <p className="graduation-date">CLASS OF 2024 <span>↗</span></p>
-          <h2 id="education-heading">{profile.education.university}</h2>
-          <div className="degree"><p>{profile.education.degree}</p><h3>{profile.education.program}</h3></div>
-          <p className="graduated">Graduated <time dateTime={profile.education.date}>{profile.education.graduated}</time></p>
+          <h2 id="education-heading">{profile.graduate.university}</h2>
+          <div className="degree"><p>{profile.graduate.degree}</p><h3>{profile.graduate.program}</h3></div>
+          <p className="graduated">Graduated <time dateTime={profile.graduate.date}>{profile.graduate.graduated}</time></p>
+          <article className="ta-experience"><div><span>TEACHING ASSISTANT</span><time>{profile.graduate.teachingAssistant.period}</time></div><h3>{profile.graduate.teachingAssistant.course}</h3><p className="ta-location">{profile.graduate.teachingAssistant.location}</p><p>{profile.graduate.teachingAssistant.description}</p></article>
         </div>}
         {scene.id === 'experience' && <div className="experience-layout">
           <div className="experience-heading"><p className="section-kicker">03 / EXPERIENCE</p><h2 id="experience-heading">Building what’s next.</h2></div>
@@ -139,7 +140,7 @@ export default function Home() {
         </div>}
       </section>}
     </div>
-    {storyActive && <div className="story-toolbar"><a href="#home" aria-label="Back to Peizhen Liao’s portrait">PL<span> / {scene?.id ?? 'THE STORY'}</span></a><nav aria-label="Story navigation"><a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Writing</a><a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Education</a><a href="#experience" aria-current={scene?.id === 'experience' ? 'location' : undefined}>Experience</a></nav></div>}
+    {storyActive && <div className="story-toolbar"><a href="#home" aria-label="Back to Peizhen Liao’s portrait">PL<span> / {scene?.id === 'publications' ? 'UNDERGRADUATE' : scene?.id === 'education' ? 'GRADUATE' : scene?.id ?? 'THE STORY'}</span></a><nav aria-label="Story navigation"><a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Undergraduate</a><a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Graduate</a><a href="#experience" aria-current={scene?.id === 'experience' ? 'location' : undefined}>Experience</a></nav></div>}
     {storyActive && <p className="story-scroll-hint"><ArrowDown size={14} /> Scroll to move through the story</p>}
     <div className="film-progress" aria-hidden="true"><span ref={progressRef} /></div>
   </main>;

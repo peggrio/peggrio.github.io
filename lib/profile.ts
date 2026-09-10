@@ -1,20 +1,46 @@
-// Replace bracketed placeholders with publication and employment details.
 export const profile = {
   monogram: 'PL',
   name: 'Peizhen Liao',
   role: 'Software Engineer',
   specialization: 'Full Stack / Site Reliability Engineering (SRE)',
-  publications: [
-    { title: '[Publication title 01]', detail: '[Authors · Journal or conference · Year]' },
-    { title: '[Publication title 02]', detail: '[Authors · Journal or conference · Year]' },
-    { title: '[Publication title 03]', detail: '[Authors · Journal or conference · Year]' },
-  ],
-  education: {
+  undergraduate: {
+    introduction: 'During undergrad, I studied Applied Chemistry and Computer Science as a dual degree. That’s when I discovered my interest in computational chemistry and mathematical modeling.',
+    work: [
+      {
+        type: 'Research article',
+        title: 'Sustainable metal-lignosulfonate catalyst for efficient catalytic transfer hydrogenation of levulinic acid to γ-valerolactone',
+        href: 'https://www.sciencedirect.com/science/article/abs/pii/S0926860X22000795',
+      },
+      {
+        type: 'Research article',
+        title: 'Molecular AND logic gate for multiple single-nucleotide mutations detection based on CRISPR/Cas9n system-triggered signal amplification',
+        href: 'https://www.sciencedirect.com/science/article/abs/pii/S0003267020303792',
+      },
+      {
+        type: 'Undergraduate thesis',
+        title: 'Molecular Dynamics Simulation of Trypsin Denaturation under Ultrahigh Pressure',
+        description: 'Studied surimi structural changes under different pressure conditions through molecular dynamics simulation and examined protein denaturation. Protein modeling was performed with GROMACS, then analyzed and visualized with PyMOL and VMD.',
+      },
+      {
+        type: 'Mathematical modeling · National Second Prize',
+        title: 'Study on the Temperature Profile and Conveyor Belt Speed of a Reflow Oven',
+        description: '2020 China Undergraduate Mathematical Contest in Modeling (CUMCM)',
+        href: 'https://www.contest.comap.com/undergraduate/contests/mcm/contests/2020/results/',
+      },
+    ],
+  },
+  graduate: {
     university: 'Northeastern University',
     degree: 'Master of Science',
     program: 'Software Engineering Systems',
     graduated: 'December 2024',
     date: '2024-12',
+    teachingAssistant: {
+      period: 'Sep 2024 — Dec 2024',
+      location: 'Boston, MA',
+      course: 'CSYE 7380 · Theory & Practical Applications of AI Generative Modeling',
+      description: 'Built a RAG-based chatbot with React and Node.js, using a Pinecone vector index for semantic similarity search. It served as a course demonstration for 50+ students studying applied generative AI.',
+    },
   },
   experience: [
     { id: '01', period: '[Start date — End date]', title: '[Job title 01]', organization: '[Company name]', description: '[Your responsibilities and a key achievement.]' },
