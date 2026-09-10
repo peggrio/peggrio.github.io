@@ -1,9 +1,10 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowUpRight, MoveHorizontal } from 'lucide-react';
 import { createScrubber, createPortraitControls } from '../lib/scrubber.mjs';
-import { sceneAtTime, storyCues, cueScrollProgress } from '../lib/story-cues.mjs';
+import { sceneAtTime, storyCues } from '../lib/story-cues.mjs';
 import { profile } from '../lib/profile';
+import { experienceScroll, storyAnchorVh, EXPERIENCE_SCROLL_VH } from '../lib/experience-scroll.mjs';
 import sequence from '../lib/video-sequence.json';
 import { UndergraduateScene } from './undergraduate-scene';
 
@@ -12,11 +13,24 @@ export default function Home() {
   const heroRef = useRef<HTMLElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const controlsRef = useRef<ReturnType<typeof createPortraitControls> | null>(null);
+  const experienceRef = useRef<HTMLDivElement>(null);
+  const [readingProgress, setReadingProgress] = useState(0);
   const [status, setStatus] = useState('loading');
   const [isScrolled, setIsScrolled] = useState(false);
   const [storyActive, setStoryActive] = useState(false);
   const [sceneTime, setSceneTime] = useState(0);
   const scene = isScrolled ? sceneAtTime(sceneTime) : null;
+
+  useLayoutEffect(() => {
+    const cards = experienceRef.current;
+    if (!cards) return;
+    const position = () => { cards.scrollTop = readingProgress * Math.max(0, cards.scrollHeight - cards.clientHeight); };
+    position();
+    const observer = new ResizeObserver(position);
+    observer.observe(cards);
+    Array.from(cards.children).forEach(child => observer.observe(child));
+    return () => observer.disconnect();
+  }, [readingProgress, scene?.id]);
 
   useEffect(() => {
     const video = videoRef.current!;
@@ -35,7 +49,9 @@ export default function Home() {
     controlsRef.current = controls;
     const scroll = () => {
       const y = Math.max(0, window.scrollY);
-      setIsScrolled(controls.scroll(y, document.documentElement.scrollHeight - window.innerHeight));
+      const timeline = experienceScroll(y, window.innerHeight, sequence);
+      setReadingProgress(timeline.progress);
+      setIsScrolled(controls.scroll(timeline.videoY, timeline.base));
       setStoryActive(y >= window.innerHeight * 0.65);
       if (heroRef.current) {
         const opacity = Math.max(0, 1 - y / (window.innerHeight * 0.65));
@@ -118,8 +134,8 @@ export default function Home() {
     </section>
 
     {/* Anchor positions share the same scroll-to-time mapping as the video. */}
-    <div className="story-track" style={{ height: `${sequence.scrollVh}svh` }} aria-hidden="true" />
-    {storyCues.map(cue => <div key={cue.id} id={cue.id} className="story-anchor" style={{ top: `${cueScrollProgress(cue.id, sequence.firstEnd, sequence.end) * sequence.scrollVh}svh` }} />)}
+    <div className="story-track" style={{ height: `${sequence.scrollVh + EXPERIENCE_SCROLL_VH}vh` }} aria-hidden="true" />
+    {storyCues.map(cue => <div key={cue.id} id={cue.id} className="story-anchor" style={{ top: `${storyAnchorVh(cue.anchor, sequence)}vh` }} />)}
 
     <div className="story-overlay" data-scene={scene?.id ?? 'none'}>
       {scene && <section className={`scene scene-${scene.id}`} aria-labelledby={`${scene.id}-heading`} style={{ opacity: scene.opacity, transform: scene.id === 'publications' ? 'none' : `translateY(${scene.offset}px)` }}>
@@ -134,7 +150,7 @@ export default function Home() {
         </div>}
         {scene.id === 'experience' && <div className="experience-layout">
           <div className="experience-heading"><p className="section-kicker">03 / EXPERIENCE</p><h2 id="experience-heading">Building what’s next.</h2></div>
-          <div className="experience-cards" tabIndex={0} role="region" aria-label="Work experience entries. Scroll to read all three roles.">{profile.experience.map(item => <article className="scene-panel experience-panel" key={item.id}>
+          <div ref={experienceRef} className="experience-cards" role="region" aria-label="Work experience entries. Continue scrolling the page to read all three roles.">{profile.experience.map(item => <article className="scene-panel experience-panel" key={item.id}>
             <div className="experience-meta"><span>EXPERIENCE {item.id}</span><time>{item.period}</time></div>
             <h3>{item.title}</h3>
             <p className="organization">{item.organization}</p>
