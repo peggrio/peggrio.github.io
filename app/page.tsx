@@ -133,7 +133,7 @@ export default function Home() {
         </div>}
         {scene.id === 'experience' && <div className="experience-layout">
           <div className="experience-heading"><p className="section-kicker">03 / EXPERIENCE</p><h2 id="experience-heading">Building what’s next.</h2></div>
-          <div className="experience-cards">{profile.experience.map(item => <article className="scene-panel experience-panel" key={item.id}>
+          <div className="experience-cards" tabIndex={0} role="region" aria-label="Work experience entries. Scroll to read all three roles.">{profile.experience.map(item => <article className="scene-panel experience-panel" key={item.id}>
             <div className="experience-meta"><span>EXPERIENCE {item.id}</span><time>{item.period}</time></div>
             <h3>{item.title}</h3>
             <p className="organization">{item.href ? <a href={item.href} target="_blank" rel="noreferrer">{item.organization}<ArrowUpRight size={13} aria-hidden="true" /></a> : item.organization}</p>
