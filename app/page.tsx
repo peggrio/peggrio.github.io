@@ -5,6 +5,7 @@ import { createScrubber, createPortraitControls } from '../lib/scrubber.mjs';
 import { sceneAtTime, storyCues, cueScrollProgress } from '../lib/story-cues.mjs';
 import { profile } from '../lib/profile';
 import sequence from '../lib/video-sequence.json';
+import { UndergraduateScene } from './undergraduate-scene';
 
 export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -121,14 +122,8 @@ export default function Home() {
     {storyCues.map(cue => <div key={cue.id} id={cue.id} className="story-anchor" style={{ top: `${cueScrollProgress(cue.id, sequence.firstEnd, sequence.end) * 540}svh` }} />)}
 
     <div className="story-overlay" data-scene={scene?.id ?? 'none'}>
-      {scene && <section className={`scene scene-${scene.id}`} aria-labelledby={`${scene.id}-heading`} style={{ opacity: scene.opacity, transform: `translateY(${scene.offset}px)` }}>
-        {scene.id === 'publications' && <div className="scene-panel publications-panel">
-          <p className="section-kicker">01 / UNDERGRADUATE EDUCATION</p>
-          <h2 id="publications-heading">Where two disciplines met.</h2>
-          <p className="scene-intro">{profile.undergraduate.introduction}</p>
-          <ol className="publication-list">{profile.undergraduate.work.map((item, index) => <li key={item.title}><span className="item-number">0{index + 1}</span><div><p className="work-type">{item.type}</p><h3>{item.href ? <a href={item.href} target="_blank" rel="noreferrer">{item.title}<ArrowUpRight size={13} /></a> : item.title}</h3>{item.description && <p>{item.description}</p>}</div></li>)}</ol>
-          <svg className="paper-leader" viewBox="0 0 260 140" aria-hidden="true"><path d="M0 10 H90 L245 125" /><circle cx="245" cy="125" r="5" /></svg>
-        </div>}
+      {scene && <section className={`scene scene-${scene.id}`} aria-labelledby={`${scene.id}-heading`} style={{ opacity: scene.opacity, transform: scene.id === 'publications' ? 'none' : `translateY(${scene.offset}px)` }}>
+        {scene.id === 'publications' && <UndergraduateScene time={sceneTime} offset={scene.offset} />}
         {scene.id === 'education' && <div className="scene-panel education-panel">
           <p className="section-kicker">02 / GRADUATE EDUCATION</p>
           <p className="graduation-date">CLASS OF 2024 <span>↗</span></p>
