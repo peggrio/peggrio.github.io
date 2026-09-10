@@ -92,11 +92,12 @@ export default function Home() {
         <a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Undergraduate</a>
         <a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Graduate</a>
         <a href="#experience" aria-current={scene?.id === 'experience' ? 'location' : undefined} className="contact-link">Experience <ArrowUpRight size={16} aria-hidden="true" /></a>
+        <a href="#contact" aria-current={scene?.id === 'contact' ? 'location' : undefined}>Contact</a>
       </nav>
     </header>
     <main id="main-content" tabIndex={-1}>
       <div className="portrait" aria-hidden="true">
-      <video ref={videoRef} src="/portrait-interactive.mp4" poster="/portrait-poster.jpg" preload="auto" muted playsInline autoPlay={false} disablePictureInPicture controls={false} />
+      <video ref={videoRef} src="/portrait-interactive.mp4?v=6" poster="/portrait-poster.jpg" preload="auto" muted playsInline autoPlay={false} disablePictureInPicture controls={false} />
       <div className="portrait-shade" />
       </div>
     <section ref={heroRef} className="hero" id="home" aria-label="Interactive portrait. Use the left and right arrow keys to turn the portrait." tabIndex={0} onKeyDown={e => {
@@ -117,8 +118,8 @@ export default function Home() {
     </section>
 
     {/* Anchor positions share the same scroll-to-time mapping as the video. */}
-    <div className="story-track" aria-hidden="true" />
-    {storyCues.map(cue => <div key={cue.id} id={cue.id} className="story-anchor" style={{ top: `${cueScrollProgress(cue.id, sequence.firstEnd, sequence.end) * 540}svh` }} />)}
+    <div className="story-track" style={{ height: `${sequence.scrollVh}svh` }} aria-hidden="true" />
+    {storyCues.map(cue => <div key={cue.id} id={cue.id} className="story-anchor" style={{ top: `${cueScrollProgress(cue.id, sequence.firstEnd, sequence.end) * sequence.scrollVh}svh` }} />)}
 
     <div className="story-overlay" data-scene={scene?.id ?? 'none'}>
       {scene && <section className={`scene scene-${scene.id}`} aria-labelledby={`${scene.id}-heading`} style={{ opacity: scene.opacity, transform: scene.id === 'publications' ? 'none' : `translateY(${scene.offset}px)` }}>
@@ -141,12 +142,21 @@ export default function Home() {
             <p className="experience-description">{item.description}</p>
           </article>)}</div>
         </div>}
+        {scene.id === 'contact' && <div className="scene-panel contact-panel">
+          <p className="section-kicker">04 / CONTACT</p>
+          <h2 id="contact-heading">Let’s connect.</h2>
+          <p className="contact-intro">Find me on LinkedIn and X.</p>
+          <div className="contact-socials">
+            <a href="https://www.linkedin.com/in/peizhenliao/" target="_blank" rel="noopener noreferrer">LinkedIn <ArrowUpRight size={20} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+            <a href="https://x.com/aprilsandrqlr" target="_blank" rel="noopener noreferrer">X / Twitter <ArrowUpRight size={20} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>
+          </div>
+        </div>}
       </section>}
     </div>
-    {storyActive && scene?.id !== 'experience' && <p className="story-scroll-hint"><ArrowDown size={14} aria-hidden="true" /> Scroll to move through the story</p>}
+    {storyActive && scene?.id !== 'experience' && scene?.id !== 'contact' && <p className="story-scroll-hint"><ArrowDown size={14} aria-hidden="true" /> Scroll to move through the story</p>}
     <div className="film-progress" aria-hidden="true"><span ref={progressRef} /></div>
     </main>
-    {storyActive && scene?.id === 'experience' && <footer className="site-footer">
+    {storyActive && (scene?.id === 'experience' || scene?.id === 'contact') && <footer className="site-footer">
       <p><strong>Peizhen Liao</strong><span>Software Engineer · Full Stack / Site Reliability Engineering</span></p>
       <nav aria-label="Footer"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a>{profile.email && <a href={`mailto:${profile.email}`}>Email</a>}</nav>
       <p><span>© 2026 Peizhen Liao</span><a href="#home">Back to top <span aria-hidden="true">↑</span></a></p>

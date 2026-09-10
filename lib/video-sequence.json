@@ -2,5 +2,7 @@
   "fps": 24,
   "firstEnd": 4.0,
   "secondEnd": 6.958333333333333,
-  "end": 10.25
+  "end": 14.291666666666666,
+  "contactStart": 10.25,
+  "scrollVh": 889.2
 }

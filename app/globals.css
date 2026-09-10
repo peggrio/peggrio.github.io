@@ -43,8 +43,8 @@ h1 { font-weight:500; font-size:clamp(52px,7.5vw,112px); line-height:1.04; lette
 .film-progress { height:2px; position:fixed; z-index:5; bottom:0; left:0; width:100%; background:#ffffff20; pointer-events:none; }
 .film-progress span { display:block; width:100%; height:100%; background:var(--accent); transform:scaleX(0); transform-origin:left; }
 
-/* The document provides 5.4 viewport heights of relative scroll travel. */
-.story-track { height:540svh; }
+/* Timeline height is provided by the assembled video sequence. */
+
 .story-anchor { position:absolute; width:1px; height:1px; pointer-events:none; }
 .story-overlay { position:fixed; inset:0; pointer-events:none; z-index:3; }
 .scene { position:absolute; inset:0; will-change:transform,opacity; }
@@ -69,7 +69,7 @@ h3 { font-size:19px; line-height:1.3; font-weight:400; margin:0; }
 .experience-layout { position:absolute; inset:124px 4.5% 90px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-template-rows:minmax(0,1fr); gap:24px; align-items:start; pointer-events:none; }
 .experience-heading { padding-top:12px; }
 .experience-heading h2 { max-width:300px; }
-.experience-cards { grid-column:3; pointer-events:auto; min-height:0; height:100%; display:flex; flex-direction:column; gap:18px; overflow-y:auto; overflow-x:hidden; padding:0 0 24px; scrollbar-width:none; overscroll-behavior:contain; }
+.experience-cards { grid-column:3; pointer-events:auto; min-height:0; height:100%; display:flex; flex-direction:column; gap:18px; overflow-y:auto; overflow-x:hidden; padding:0 0 24px; scrollbar-width:none; overscroll-behavior:auto; }
 .experience-cards::-webkit-scrollbar { display:none; }
 .experience-cards:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
 .experience-panel { width:auto; flex:0 0 auto; }
@@ -233,4 +233,14 @@ h3 { font-size:19px; line-height:1.3; font-weight:400; margin:0; }
   .scene { transform:none !important; }
   .research-paper { transform:none !important; opacity:1 !important; }
   .paper-connections { display:none; }
+}
+
+.contact-panel { position:absolute; right:4.5%; top:38%; width:calc(91% / 3 - 16px); pointer-events:auto; }
+.contact-intro { margin:20px 0; color:var(--muted-foreground); font-size:14px; line-height:1.6; }
+.contact-socials { display:flex; flex-direction:column; }
+.contact-socials a { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--border); padding:18px 0; font-size:18px; }
+.contact-socials a:hover { color:var(--accent); }
+@media(max-width:600px) {
+  .site-header nav { gap:10px; font-size:10px; }
+  .contact-panel { top:auto; bottom:100px; left:20px; right:20px; width:auto; }
 }
