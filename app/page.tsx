@@ -105,7 +105,6 @@ export default function Home() {
         e.preventDefault(); controlsRef.current?.moveBy(e.key === 'ArrowRight' ? 40 : -40, window.innerWidth);
       }
     }}>
-      <div className="edition"><span className="tiny-line" /> PORTFOLIO — 2026</div>
       <div className="hero-content">
         <div className="hero-title"><p className="eyebrow">HELLO, I’M</p><h1>{profile.name}</h1><p className="role">{profile.role}</p><p className="specialization">{profile.specialization}</p><ul className="tech-stack" aria-label="Core technology stack">{profile.techStack.map(technology => <li key={technology}>{technology}</li>)}</ul></div>
         <div className="hero-note"><span className="note-symbol">✳</span><p>From interface<br />to infrastructure.</p><a href="#publications">Explore my story <ArrowDown size={17} /></a></div>
