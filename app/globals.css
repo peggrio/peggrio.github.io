@@ -30,6 +30,8 @@ nav a:hover { opacity:.65; }
 h1 { font-weight:500; font-size:clamp(52px,7.5vw,112px); line-height:1.04; letter-spacing:-5px; margin:0; }
 .role { font-size:22px; margin:26px 0 0; letter-spacing:.3px; }
 .specialization { font-size:13px; margin:10px 0 0; line-height:1.6; letter-spacing:.7px; color:var(--muted-foreground); }
+.tech-stack { display:flex; flex-wrap:wrap; gap:7px; list-style:none; margin:17px 0 0; padding:0; }
+.tech-stack li { border:1px solid #ffffff70; border-radius:999px; padding:6px 10px; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--accent); }
 .hero-note { width:210px; flex-shrink:0; }
 .note-symbol { font-size:36px; line-height:1; color:var(--accent); }
 .hero-note p { font-size:20px; line-height:1.5; margin:20px 0; }
@@ -116,6 +118,8 @@ h3 { font-size:19px; line-height:1.3; font-weight:400; margin:0; }
   .eyebrow { font-size:11px; letter-spacing:2px; }
   .role { font-size:19px; margin-top:20px; }
   .specialization { font-size:11px; max-width:250px; }
+  .tech-stack { margin-top:13px; gap:5px; max-width:260px; }
+  .tech-stack li { padding:5px 8px; font-size:8px; letter-spacing:.7px; }
   .hero-note { display:none; }
   .hero-footer { min-height:94px; flex-wrap:wrap; gap:9px; align-content:center; padding:13px 0; }
   .discover { font-size:11px; }

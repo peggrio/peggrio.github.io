@@ -2,7 +2,8 @@ export const profile = {
   monogram: 'PL',
   name: 'Peizhen Liao',
   role: 'Software Engineer',
-  specialization: 'Full Stack / Site Reliability Engineering (SRE)',
+  specialization: 'Full Stack / Site Reliability Engineering',
+  techStack: ['AWS', 'Kubernetes', 'Databricks', 'Microservices'],
   undergraduate: {
     introduction: 'During undergrad, I studied Applied Chemistry and Computer Science as a dual degree. That’s when I discovered my interest in computational chemistry and mathematical modeling.',
     work: [

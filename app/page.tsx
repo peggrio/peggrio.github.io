@@ -107,7 +107,7 @@ export default function Home() {
     }}>
       <div className="edition"><span className="tiny-line" /> PORTFOLIO — 2026</div>
       <div className="hero-content">
-        <div className="hero-title"><p className="eyebrow">HELLO, I’M</p><h1>{profile.name}</h1><p className="role">{profile.role}</p><p className="specialization">{profile.specialization}</p></div>
+        <div className="hero-title"><p className="eyebrow">HELLO, I’M</p><h1>{profile.name}</h1><p className="role">{profile.role}</p><p className="specialization">{profile.specialization}</p><ul className="tech-stack" aria-label="Core technology stack">{profile.techStack.map(technology => <li key={technology}>{technology}</li>)}</ul></div>
         <div className="hero-note"><span className="note-symbol">✳</span><p>From interface<br />to infrastructure.</p><a href="#publications">Explore my story <ArrowDown size={17} /></a></div>
       </div>
       <footer className="hero-footer">
@@ -148,7 +148,7 @@ export default function Home() {
     <div className="film-progress" aria-hidden="true"><span ref={progressRef} /></div>
     </main>
     {storyActive && scene?.id === 'experience' && <footer className="site-footer">
-      <p><strong>Peizhen Liao</strong><span>Software Engineer · Full Stack / SRE</span></p>
+      <p><strong>Peizhen Liao</strong><span>Software Engineer · Full Stack / Site Reliability Engineering</span></p>
       <nav aria-label="Footer"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a>{profile.email && <a href={`mailto:${profile.email}`}>Email</a>}</nav>
       <p><span>© 2026 Peizhen Liao</span><a href="#home">Back to top <span aria-hidden="true">↑</span></a></p>
     </footer>}
