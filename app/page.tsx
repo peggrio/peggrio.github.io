@@ -16,10 +16,38 @@ export default function Home() {
   const experienceRef = useRef<HTMLDivElement>(null);
   const [readingProgress, setReadingProgress] = useState(0);
   const [status, setStatus] = useState('loading');
+  const [motionCueVisible, setMotionCueVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [storyActive, setStoryActive] = useState(false);
   const [sceneTime, setSceneTime] = useState(0);
   const scene = isScrolled ? sceneAtTime(sceneTime) : null;
+  // The scrubber stops within the last frame, before the video's duration.
+  const storyComplete = sceneTime >= sequence.end - 1 / sequence.fps;
+
+  useEffect(() => {
+    let fadeTimer: ReturnType<typeof setTimeout> | undefined;
+    const hide = () => {
+      clearTimeout(fadeTimer);
+      setMotionCueVisible(false);
+    };
+    const reveal = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse' || window.scrollY > 0) return;
+      clearTimeout(fadeTimer);
+      setMotionCueVisible(true);
+      fadeTimer = setTimeout(hide, 700);
+    };
+    window.addEventListener('pointermove', reveal, { passive: true });
+    window.addEventListener('scroll', hide, { passive: true });
+    window.addEventListener('blur', hide);
+    document.addEventListener('visibilitychange', hide);
+    return () => {
+      clearTimeout(fadeTimer);
+      window.removeEventListener('pointermove', reveal);
+      window.removeEventListener('scroll', hide);
+      window.removeEventListener('blur', hide);
+      document.removeEventListener('visibilitychange', hide);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const cards = experienceRef.current;
@@ -104,7 +132,7 @@ export default function Home() {
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className={`site-header${storyActive ? ' site-header--story' : ''}`}>
-      <a href="#home" className="wordmark" aria-label="Peizhen Liao — Home">{profile.monogram}<span className="mark-dot" aria-hidden="true" /></a>
+      <a href="#home" className="wordmark" aria-label="PL Inspolab — Home">{profile.monogram}<span className="mark-dot" aria-hidden="true" /></a>
       <nav aria-label="Primary">
         <a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Undergraduate</a>
         <a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Graduate</a>
@@ -125,11 +153,17 @@ export default function Home() {
     }}>
       <div className="hero-content">
         <div className="hero-title"><p className="eyebrow">HELLO, I’M</p><h1>{profile.name}</h1><p className="role">{profile.role}</p><p className="specialization">{profile.specialization}</p><ul className="tech-stack" aria-label="Core technology stack">{profile.techStack.map(technology => <li key={technology}>{technology}</li>)}</ul></div>
-        <div className="hero-note"><span className="note-symbol">✳</span><p>From interface<br />to infrastructure.</p><a href="#publications">Explore my story <ArrowDown size={17} /></a></div>
+        <aside className="hero-note current-work" aria-labelledby="current-work-heading">
+          <p className="section-kicker">CURRENTLY / SOFTWARE ENGINEER</p>
+          <h2 id="current-work-heading">Databricks &amp;<br />AI agent orchestration.</h2>
+          <p className="current-organization">{profile.currentWork.organization}</p>
+          <p className="current-summary">{profile.currentWork.summary}</p>
+          <a href="#experience">Explore my experience <ArrowDown size={17} aria-hidden="true" /></a>
+        </aside>
       </div>
       <footer className="hero-footer">
         <a href="#publications" className="discover">Scroll to explore <ArrowDown size={15} aria-hidden="true" /></a>
-        <div className="motion-cue"><MoveHorizontal size={21} strokeWidth={1.3} aria-hidden="true" /><span role="status" aria-live="polite">{status === 'loading' ? 'Preparing your portrait' : status === 'error' ? 'Video unavailable · Static portrait' : 'Move left or right to turn the portrait'}</span></div>
+        <div className={`motion-cue${motionCueVisible ? ' motion-cue--visible' : ''}`}><MoveHorizontal size={21} strokeWidth={1.3} aria-hidden="true" /><span role="status" aria-live="polite">{status === 'loading' ? 'Preparing your portrait' : status === 'error' ? 'Video unavailable · Static portrait' : 'Move left or right to turn the portrait'}</span></div>
       </footer>
     </section>
 
@@ -146,6 +180,7 @@ export default function Home() {
           <h2 id="education-heading">{profile.graduate.university}</h2>
           <div className="degree"><p>{profile.graduate.degree}</p><h3>{profile.graduate.program}</h3></div>
           <p className="graduated">Graduated <time dateTime={profile.graduate.date}>{profile.graduate.graduated}</time></p>
+          <div className="graduate-courses"><p className="section-kicker">MAIN COURSES</p><p>{profile.graduate.courses.join(' · ')}</p></div>
           <article className="ta-experience"><div><span>TEACHING ASSISTANT</span><time>{profile.graduate.teachingAssistant.period}</time></div><h3>{profile.graduate.teachingAssistant.course}</h3><p className="ta-location">{profile.graduate.teachingAssistant.location}</p><p>{profile.graduate.teachingAssistant.description}</p></article>
         </div>}
         {scene.id === 'experience' && <div className="experience-layout">
@@ -172,7 +207,7 @@ export default function Home() {
     {storyActive && scene?.id !== 'experience' && scene?.id !== 'contact' && <p className="story-scroll-hint"><ArrowDown size={14} aria-hidden="true" /> Scroll to move through the story</p>}
     <div className="film-progress" hidden={isScrolled} aria-hidden="true"><span ref={progressRef} /></div>
     </main>
-    {storyActive && (scene?.id === 'experience' || scene?.id === 'contact') && <footer className="site-footer">
+    {storyActive && storyComplete && <footer className="site-footer">
       <p><strong>Peizhen Liao</strong><span>Software Engineer · Full Stack / Site Reliability Engineering</span></p>
       <nav aria-label="Footer"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a>{profile.email && <a href={`mailto:${profile.email}`}>Email</a>}</nav>
       <p><span>© 2026 Peizhen Liao</span><a href="#home">Back to top <span aria-hidden="true">↑</span></a></p>

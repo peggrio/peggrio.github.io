@@ -1,9 +1,13 @@
 export const profile = {
-  monogram: 'PL',
+  monogram: 'PL Inspolab',
   name: 'Peizhen Liao',
   role: 'Software Engineer',
   specialization: 'Full Stack / Site Reliability Engineering',
   techStack: ['AWS', 'Kubernetes', 'Databricks', 'Microservices'],
+  currentWork: {
+    organization: 'Machflow Inc. · Pomo.ai',
+    summary: 'Building Databricks Lakehouse pipelines for 10K+ daily records and orchestrating 10+ production AI agents through reusable MCP tools and shared workspaces.',
+  },
   undergraduate: {
     introduction: 'During undergrad, I studied Applied Chemistry and Computer Science as a dual degree. That’s when I discovered my interest in computational chemistry and mathematical modeling.',
     work: [
@@ -36,6 +40,7 @@ export const profile = {
     program: 'Software Engineering Systems',
     graduated: 'December 2024',
     date: '2024-12',
+    courses: ['Data Structures and Algorithms', 'Computer Networks', 'Advanced Cloud Computing', 'Web Design', 'User Experience Engineering'],
     teachingAssistant: {
       period: 'Sep 2024 — Dec 2024',
       location: 'Boston, MA',
