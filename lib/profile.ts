@@ -46,11 +46,11 @@ export const profile = {
   experience: [
     {
       id: '01',
-      period: 'Jun 2023 — Jan 2024',
-      title: 'Backend & Cloud Infrastructure Software Engineer Intern',
-      organization: 'Factorial Energy',
-      location: 'Billerica, MA',
-      description: 'Built an AWS and Terraform serverless HR–IT sync, saving about 10 manual hours weekly. Delivered a paperless GraphQL and DynamoDB production system with EC2-based UI automation.',
+      period: 'Sep 2025 — Present',
+      title: 'Software Engineer',
+      organization: 'Machflow Inc. · Pomo.ai',
+      location: 'Palo Alto, CA',
+      description: 'Built 99%+ reliable Databricks pipelines for 10K+ daily records and semantic search over 50K+ profiles. Shared MCP tools cut integration time by 30% across 10+ AI agents.',
     },
     {
       id: '02',
@@ -62,11 +62,11 @@ export const profile = {
     },
     {
       id: '03',
-      period: 'Sep 2025 — Present',
-      title: 'Software Engineer',
-      organization: 'Machflow Inc. · Pomo.ai',
-      location: 'Palo Alto, CA',
-      description: 'Built 99%+ reliable Databricks pipelines for 10K+ daily records and semantic search over 50K+ profiles. Shared MCP tools cut integration time by 30% across 10+ AI agents.',
+      period: 'Jun 2023 — Jan 2024',
+      title: 'Backend & Cloud Infrastructure Software Engineer Intern',
+      organization: 'Factorial Energy',
+      location: 'Billerica, MA',
+      description: 'Built an AWS and Terraform serverless HR–IT sync, saving about 10 manual hours weekly. Delivered a paperless GraphQL and DynamoDB production system with EC2-based UI automation.',
     },
   ],
   email: '',

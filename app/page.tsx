@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUpRight, MoveHorizontal } from 'lucide-react';
 import { createScrubber, createPortraitControls } from '../lib/scrubber.mjs';
 import { sceneAtTime, storyCues } from '../lib/story-cues.mjs';
 import { profile } from '../lib/profile';
-import { experienceScroll, storyAnchorVh, EXPERIENCE_SCROLL_VH } from '../lib/experience-scroll.mjs';
+import { experienceScroll, storyAnchorVh } from '../lib/experience-scroll.mjs';
 import sequence from '../lib/video-sequence.json';
 import { UndergraduateScene } from './undergraduate-scene';
 
@@ -39,7 +39,9 @@ export default function Home() {
       fps: sequence.fps,
       onReady: () => setStatus('ready'),
       onProgress: (fraction: number) => {
-        if (progressRef.current) progressRef.current.style.transform = `scaleX(${fraction})`;
+        const portraitEnd = sequence.firstEnd - 1 / sequence.fps;
+        const portraitProgress = Math.max(0, Math.min(1, fraction * video.duration / portraitEnd));
+        if (progressRef.current) progressRef.current.style.transform = `scaleX(${portraitProgress})`;
       },
       // Update the overlay only after seeked, so it matches the decoded picture.
       onFrame: (time: number) => setSceneTime(time),
@@ -103,7 +105,6 @@ export default function Home() {
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className={`site-header${storyActive ? ' site-header--story' : ''}`}>
       <a href="#home" className="wordmark" aria-label="Peizhen Liao — Home">{profile.monogram}<span className="mark-dot" aria-hidden="true" /></a>
-      <span className="header-caption" aria-hidden="true">A PERSONAL PORTRAIT</span>
       <nav aria-label="Primary">
         <a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Undergraduate</a>
         <a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Graduate</a>
@@ -113,7 +114,7 @@ export default function Home() {
     </header>
     <main id="main-content" tabIndex={-1}>
       <div className="portrait" aria-hidden="true">
-      <video ref={videoRef} src="/portrait-interactive.mp4?v=6" poster="/portrait-poster.jpg" preload="auto" muted playsInline autoPlay={false} disablePictureInPicture controls={false} />
+      <video ref={videoRef} src="/portrait-interactive.mp4?v=6-soft-join" poster="/portrait-poster.jpg" preload="auto" muted playsInline autoPlay={false} disablePictureInPicture controls={false} />
       <div className="portrait-shade" />
       </div>
     <section ref={heroRef} className="hero" id="home" aria-label="Interactive portrait. Use the left and right arrow keys to turn the portrait." tabIndex={0} onKeyDown={e => {
@@ -129,12 +130,11 @@ export default function Home() {
       <footer className="hero-footer">
         <a href="#publications" className="discover">Scroll to explore <ArrowDown size={15} aria-hidden="true" /></a>
         <div className="motion-cue"><MoveHorizontal size={21} strokeWidth={1.3} aria-hidden="true" /><span role="status" aria-live="polite">{status === 'loading' ? 'Preparing your portrait' : status === 'error' ? 'Video unavailable · Static portrait' : 'Move left or right to turn the portrait'}</span></div>
-        <span className="frame-label">INTERACTIVE PORTRAIT <span>01 / 04</span></span>
       </footer>
     </section>
 
     {/* Anchor positions share the same scroll-to-time mapping as the video. */}
-    <div className="story-track" style={{ height: `${sequence.scrollVh + EXPERIENCE_SCROLL_VH}vh` }} aria-hidden="true" />
+    <div className="story-track" style={{ height: `${sequence.scrollVh}vh` }} aria-hidden="true" />
     {storyCues.map(cue => <div key={cue.id} id={cue.id} className="story-anchor" style={{ top: `${storyAnchorVh(cue.anchor, sequence)}vh` }} />)}
 
     <div className="story-overlay" data-scene={scene?.id ?? 'none'}>
@@ -170,7 +170,7 @@ export default function Home() {
       </section>}
     </div>
     {storyActive && scene?.id !== 'experience' && scene?.id !== 'contact' && <p className="story-scroll-hint"><ArrowDown size={14} aria-hidden="true" /> Scroll to move through the story</p>}
-    <div className="film-progress" aria-hidden="true"><span ref={progressRef} /></div>
+    <div className="film-progress" hidden={isScrolled} aria-hidden="true"><span ref={progressRef} /></div>
     </main>
     {storyActive && (scene?.id === 'experience' || scene?.id === 'contact') && <footer className="site-footer">
       <p><strong>Peizhen Liao</strong><span>Software Engineer · Full Stack / Site Reliability Engineering</span></p>

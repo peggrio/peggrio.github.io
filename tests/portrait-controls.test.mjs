@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createScrubber, createPortraitControls, scrollTime } from '../lib/scrubber.mjs';
 
-function fixture({ loaded = true, onFrame = () => {} } = {}) {
+function fixture({ loaded = true, onFrame = () => {}, onProgress = () => {} } = {}) {
   const callbacks = new Map();
   let next = 0;
   globalThis.requestAnimationFrame = fn => { callbacks.set(++next, fn); return next; };
@@ -19,7 +19,7 @@ function fixture({ loaded = true, onFrame = () => {} } = {}) {
     finish() { this.seeking = false; this.dispatchEvent(new Event('seeked')); }
   }
   const video = new Video();
-  const scrubber = createScrubber(video, { firstEnd: 4, fps: 24, onFrame });
+  const scrubber = createScrubber(video, { firstEnd: 4, fps: 24, onFrame, onProgress });
   const controls = createPortraitControls(scrubber, { firstEnd: 4, end: 10.25 });
   const flush = () => { const current = [...callbacks.values()]; callbacks.clear(); current.forEach(fn => fn()); };
   const settle = () => { flush(); if (video.seeking) video.finish(); flush(); };
@@ -62,6 +62,23 @@ test('rapid direction changes retain relative displacement while awaiting seeked
   assert.ok(video.currentTime < 4, 'horizontal movement cannot enter clip 2');
   scrubber.move(-20, 1000); settle();
   assert.ok(video.currentTime < 3.95, 'reverse immediately at the edge');
+  scrubber.destroy();
+});
+
+test('progress tracks every relative input immediately and stale seeks never rewind it', () => {
+  const progress = [];
+  const { video, scrubber, flush, settle } = fixture({ onProgress: p => progress.push(p) });
+  settle();
+  scrubber.move(100, 1000); flush();
+  scrubber.move(-50, 1000);
+  scrubber.move(1, 1000);
+  const latest = progress.at(-1);
+  assert.ok(Math.abs(latest * video.duration - 2.1632) < 1e-9);
+  const writes = video.writes.length;
+  video.finish();
+  assert.equal(progress.at(-1), latest, 'old decoded target cannot move the progress bar');
+  assert.equal(video.writes.length, writes + 1, 'seeked immediately dispatches the latest target');
+  settle();
   scrubber.destroy();
 });
 
