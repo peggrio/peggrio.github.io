@@ -20,7 +20,7 @@ npm run build
 npm run preview
 ```
 
-The publishable output is `dist/`. `legacy/` preserves the previous Jekyll homepage and is not copied into the published site.
+The publishable output is `dist/`.
 
 ## Content and interaction
 
