@@ -11,12 +11,14 @@ import { UndergraduateScene } from './undergraduate-scene';
 export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLElement>(null);
+  const primaryNavRef = useRef<HTMLElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const controlsRef = useRef<ReturnType<typeof createPortraitControls> | null>(null);
   const experienceRef = useRef<HTMLDivElement>(null);
   const [readingProgress, setReadingProgress] = useState(0);
   const [status, setStatus] = useState('loading');
   const [motionCueVisible, setMotionCueVisible] = useState(false);
+  const [storyCueVisible, setStoryCueVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [storyActive, setStoryActive] = useState(false);
   const [sceneTime, setSceneTime] = useState(0);
@@ -24,16 +26,37 @@ export default function Home() {
   // The scrubber stops within the last frame, before the video's duration.
   const storyComplete = sceneTime >= sequence.end - 1 / sequence.fps;
 
+  useLayoutEffect(() => {
+    const nav = primaryNavRef.current;
+    if (!nav) return;
+    const positionIndicator = () => {
+      const activeLink = nav.querySelector<HTMLElement>('[aria-current="location"]');
+      if (!activeLink) {
+        nav.style.setProperty('--nav-indicator-opacity', '0');
+        return;
+      }
+      nav.style.setProperty('--nav-indicator-x', `${activeLink.offsetLeft}px`);
+      nav.style.setProperty('--nav-indicator-width', `${activeLink.offsetWidth}px`);
+      nav.style.setProperty('--nav-indicator-opacity', '1');
+    };
+    positionIndicator();
+    window.addEventListener('resize', positionIndicator);
+    return () => window.removeEventListener('resize', positionIndicator);
+  }, [scene?.id]);
+
   useEffect(() => {
     let fadeTimer: ReturnType<typeof setTimeout> | undefined;
     const hide = () => {
       clearTimeout(fadeTimer);
       setMotionCueVisible(false);
+      setStoryCueVisible(false);
     };
     const reveal = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse' || window.scrollY > 0) return;
+      if (event.pointerType !== 'mouse') return;
       clearTimeout(fadeTimer);
-      setMotionCueVisible(true);
+      const onHome = window.scrollY < window.innerHeight * 0.65;
+      setMotionCueVisible(onHome);
+      setStoryCueVisible(!onHome);
       fadeTimer = setTimeout(hide, 700);
     };
     window.addEventListener('pointermove', reveal, { passive: true });
@@ -140,11 +163,12 @@ export default function Home() {
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className={`site-header${storyActive ? ' site-header--story' : ''}`}>
       <a href="#home" className="wordmark" aria-label="PL Inspolab — Home">{profile.monogram}<span className="mark-dot" aria-hidden="true" /></a>
-      <nav aria-label="Primary">
+      <nav ref={primaryNavRef} aria-label="Primary">
         <a href="#publications" aria-current={scene?.id === 'publications' ? 'location' : undefined}>Undergraduate</a>
         <a href="#education" aria-current={scene?.id === 'education' ? 'location' : undefined}>Graduate</a>
         <a href="#experience" aria-current={scene?.id === 'experience' ? 'location' : undefined} className="contact-link">Experience <ArrowUpRight size={16} aria-hidden="true" /></a>
         <a href="#contact" aria-current={scene?.id === 'contact' ? 'location' : undefined}>Contact</a>
+        <span className="nav-indicator" aria-hidden="true" />
       </nav>
     </header>
     <main id="main-content" tabIndex={-1}>
@@ -219,7 +243,7 @@ export default function Home() {
         </div>}
       </section>}
     </div>
-    {storyActive && scene?.id !== 'experience' && scene?.id !== 'contact' && <p className="story-scroll-hint"><ArrowDown size={14} aria-hidden="true" /> Scroll to move through the story</p>}
+    {storyActive && scene?.id !== 'experience' && scene?.id !== 'contact' && <p className={`story-scroll-hint${storyCueVisible ? ' story-scroll-hint--visible' : ''}`}><ArrowDown size={14} aria-hidden="true" /> Scroll to move through the story</p>}
     <div className="film-progress" hidden={isScrolled} aria-hidden="true"><span ref={progressRef} /></div>
     </main>
     {storyActive && storyComplete && <footer className="site-footer">
