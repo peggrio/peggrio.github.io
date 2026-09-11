@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUpRight, MoveHorizontal } from 'lucide-react';
 import { createScrubber, createPortraitControls } from '../lib/scrubber.mjs';
 import { sceneAtTime, storyCues } from '../lib/story-cues.mjs';
 import { profile } from '../lib/profile';
-import { experienceScroll, storyAnchorVh } from '../lib/experience-scroll.mjs';
+import { experienceScroll, storyAnchorVh, storyScrollVh } from '../lib/experience-scroll.mjs';
 import sequence from '../lib/video-sequence.json';
 import { UndergraduateScene } from './undergraduate-scene';
 
@@ -52,7 +52,14 @@ export default function Home() {
   useLayoutEffect(() => {
     const cards = experienceRef.current;
     if (!cards) return;
-    const position = () => { cards.scrollTop = readingProgress * Math.max(0, cards.scrollHeight - cards.clientHeight); };
+    const position = () => {
+      const entries = Array.from(cards.children) as HTMLElement[];
+      const centers = entries.map(entry => entry.offsetTop + entry.offsetHeight / 2 - cards.clientHeight / 2);
+      const step = readingProgress * (entries.length - 1);
+      const index = Math.min(Math.floor(step), entries.length - 1);
+      const next = Math.min(index + 1, entries.length - 1);
+      cards.scrollTop = centers[index] + (centers[next] - centers[index]) * (step - index);
+    };
     position();
     const observer = new ResizeObserver(position);
     observer.observe(cards);
@@ -141,7 +148,7 @@ export default function Home() {
       </nav>
     </header>
     <main id="main-content" tabIndex={-1}>
-      <div className="portrait" aria-hidden="true">
+      <div className={`portrait${scene?.id === 'experience' ? ' portrait--experience' : ''}`} aria-hidden="true">
       <video ref={videoRef} src="/portrait-interactive.mp4?v=6-soft-join" poster="/portrait-poster.jpg" preload="auto" muted playsInline autoPlay={false} disablePictureInPicture controls={false} />
       <div className="portrait-shade" />
       </div>
@@ -156,7 +163,6 @@ export default function Home() {
         <aside className="hero-note current-work" aria-labelledby="current-work-heading">
           <p className="section-kicker">CURRENTLY / SOFTWARE ENGINEER</p>
           <h2 id="current-work-heading">Databricks &amp;<br />AI agent orchestration.</h2>
-          <p className="current-organization">{profile.currentWork.organization}</p>
           <p className="current-summary">{profile.currentWork.summary}</p>
           <a href="#experience">Explore my experience <ArrowDown size={17} aria-hidden="true" /></a>
         </aside>
@@ -168,24 +174,33 @@ export default function Home() {
     </section>
 
     {/* Anchor positions share the same scroll-to-time mapping as the video. */}
-    <div className="story-track" style={{ height: `${sequence.scrollVh}vh` }} aria-hidden="true" />
+    <div className="story-track" style={{ height: `${storyScrollVh(sequence)}vh` }} aria-hidden="true" />
     {storyCues.map(cue => <div key={cue.id} id={cue.id} className="story-anchor" style={{ top: `${storyAnchorVh(cue.anchor, sequence)}vh` }} />)}
 
     <div className="story-overlay" data-scene={scene?.id ?? 'none'}>
-      {scene && <section className={`scene scene-${scene.id}`} aria-labelledby={`${scene.id}-heading`} style={{ opacity: scene.opacity, transform: scene.id === 'publications' ? 'none' : `translateY(${scene.offset}px)` }}>
+      {scene && <section className={`scene scene-${scene.id}`} aria-labelledby={`${scene.id}-heading`} style={{ opacity: scene.opacity, transform: scene.id === 'publications' || scene.id === 'experience' ? 'none' : `translateY(${scene.offset}px)` }}>
         {scene.id === 'publications' && <UndergraduateScene time={sceneTime} offset={scene.offset} />}
-        {scene.id === 'education' && <div className="scene-panel education-panel">
+        {scene.id === 'education' && <div className="education-viewport" tabIndex={0} role="region" aria-label="Graduate education">
+          <div className="scene-panel education-panel">
+          <div className="education-overview">
           <p className="section-kicker">02 / GRADUATE EDUCATION</p>
-          <p className="graduation-date">CLASS OF 2024 <span>↗</span></p>
+          <p className="graduation-date">CLASS OF 2024</p>
           <h2 id="education-heading">{profile.graduate.university}</h2>
           <div className="degree"><p>{profile.graduate.degree}</p><h3>{profile.graduate.program}</h3></div>
           <p className="graduated">Graduated <time dateTime={profile.graduate.date}>{profile.graduate.graduated}</time></p>
+          </div>
+          <div className="education-details">
           <div className="graduate-courses"><p className="section-kicker">MAIN COURSES</p><p>{profile.graduate.courses.join(' · ')}</p></div>
           <article className="ta-experience"><div><span>TEACHING ASSISTANT</span><time>{profile.graduate.teachingAssistant.period}</time></div><h3>{profile.graduate.teachingAssistant.course}</h3><p className="ta-location">{profile.graduate.teachingAssistant.location}</p><p>{profile.graduate.teachingAssistant.description}</p></article>
+          </div>
+          </div>
         </div>}
         {scene.id === 'experience' && <div className="experience-layout">
           <div className="experience-heading"><p className="section-kicker">03 / EXPERIENCE</p><h2 id="experience-heading">Building what’s next.</h2></div>
-          <div ref={experienceRef} className="experience-cards" role="region" aria-label="Work experience entries. Continue scrolling the page to read all three roles.">{profile.experience.map(item => <article className="scene-panel experience-panel" key={item.id}>
+          <div ref={experienceRef} className="experience-cards" role="region" aria-label="Work experience entries. Continue scrolling the page to read all three roles.">{profile.experience.map((item, index) => <article className="scene-panel experience-panel" key={item.id} style={{
+            filter: `blur(${Math.min(1, Math.max(0, (Math.abs(index - readingProgress * (profile.experience.length - 1)) - .3) / .7)) * 5}px)`,
+            opacity: 1 - Math.min(1, Math.max(0, (Math.abs(index - readingProgress * (profile.experience.length - 1)) - .3) / .7)) * .7,
+          }}>
             <div className="experience-meta"><span>EXPERIENCE {item.id}</span><time>{item.period}</time></div>
             <h3>{item.title}</h3>
             <p className="organization">{item.organization}</p>
@@ -208,8 +223,7 @@ export default function Home() {
     <div className="film-progress" hidden={isScrolled} aria-hidden="true"><span ref={progressRef} /></div>
     </main>
     {storyActive && storyComplete && <footer className="site-footer">
-      <p><strong>Peizhen Liao</strong><span>Software Engineer · Full Stack / Site Reliability Engineering</span></p>
-      <nav aria-label="Footer"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a>{profile.email && <a href={`mailto:${profile.email}`}>Email</a>}</nav>
+      <nav aria-label="Footer"><a href="#publications">Undergraduate</a><a href="#education">Graduate</a><a href="#experience">Experience</a>{profile.email && <a href={`mailto:${profile.email}`}>Email</a>}</nav>
       <p><span>© 2026 Peizhen Liao</span><a href="#home">Back to top <span aria-hidden="true">↑</span></a></p>
     </footer>}
   </>;
