@@ -172,7 +172,9 @@ export default function Home() {
       </nav>
     </header>
     <main id="main-content" tabIndex={-1}>
-      <div className={`portrait${scene?.id === 'experience' ? ' portrait--experience' : ''}`} aria-hidden="true">
+      <div className={`portrait${status === 'ready' ? ' portrait--ready' : ''}${scene?.id === 'experience' ? ' portrait--experience' : ''}`} aria-hidden="true">
+      {/* Keep a real image beneath the video: Safari can clear its native poster while seeking. */}
+      <img className="portrait-poster" src="/portrait-poster.jpg" alt="" fetchPriority="high" />
       <video ref={videoRef} src="/portrait-interactive.mp4?v=6-soft-join" poster="/portrait-poster.jpg" preload="auto" muted playsInline autoPlay={false} disablePictureInPicture controls={false} />
       <div className="portrait-shade" />
       </div>
