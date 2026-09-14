@@ -2,15 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createScrubber, createPortraitControls, scrollTime } from '../lib/scrubber.mjs';
 
-function fixture({ loaded = true, onFrame = () => {}, onProgress = () => {} } = {}) {
+function fixture({ loaded = true, initialReadyState = loaded ? 4 : 0, onFrame = () => {}, onProgress = () => {} } = {}) {
   const callbacks = new Map();
   let next = 0;
   globalThis.requestAnimationFrame = fn => { callbacks.set(++next, fn); return next; };
   globalThis.cancelAnimationFrame = id => callbacks.delete(id);
   class Video extends EventTarget {
-    duration = 10.25; readyState = loaded ? 4 : 0; seeking = false;
-    paused = false; autoplay = true; time = 0; writes = [];
+    duration = 10.25; readyState = initialReadyState; seeking = false;
+    paused = false; autoplay = true; time = 0; writes = []; playCalls = 0;
     pause() { this.paused = true; }
+    play() { this.playCalls += 1; this.paused = false; return Promise.resolve(); }
     get currentTime() { return this.time; }
     set currentTime(value) {
       assert.equal(this.seeking, false, 'seeks must never interrupt one another');
@@ -120,6 +121,20 @@ test('scroll restored before metadata loads still selects the right clip; teardo
   scrubber.setTime(5); scrubber.destroy(); flush();
   assert.equal(video.writes.length, count);
   assert.equal(video.paused, true);
+});
+
+test('metadata-only iOS video primes decoding before the first seek', () => {
+  const { video, scrubber, flush, settle } = fixture({ initialReadyState: 1 });
+  scrubber.setTime(5.6);
+  flush();
+  assert.equal(video.writes.length, 0, 'metadata alone is not enough to seek safely');
+  assert.equal(video.playCalls, 1, 'muted inline playback primes the iOS decoder');
+  video.readyState = 2;
+  video.dispatchEvent(new Event('loadeddata'));
+  settle();
+  assert.ok(video.currentTime > 5.5 && video.currentTime < 5.7);
+  assert.equal(video.paused, true);
+  scrubber.destroy();
 });
 
 test('vertical timeline clamps within clips 2 and 3', () => {

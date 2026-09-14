@@ -26,6 +26,14 @@ export default function Home() {
   // The scrubber stops within the last frame, before the video's duration.
   const storyComplete = sceneTime >= sequence.end - 1 / sequence.fps;
 
+  const readScrollMetrics = () => {
+    const element = document.scrollingElement;
+    return {
+      y: element?.scrollTop ?? window.scrollY,
+      viewport: window.visualViewport?.height ?? window.innerHeight,
+    };
+  };
+
   useLayoutEffect(() => {
     const nav = primaryNavRef.current;
     if (!nav) return;
@@ -108,13 +116,14 @@ export default function Home() {
     const controls = createPortraitControls(scrubber, sequence);
     controlsRef.current = controls;
     const scroll = () => {
-      const y = Math.max(0, window.scrollY);
-      const timeline = experienceScroll(y, window.innerHeight, sequence);
+      const metrics = readScrollMetrics();
+      const y = Math.max(0, metrics.y);
+      const timeline = experienceScroll(y, metrics.viewport, sequence);
       setReadingProgress(timeline.progress);
       setIsScrolled(controls.scroll(timeline.videoY, timeline.base));
-      setStoryActive(y >= window.innerHeight * 0.65);
+      setStoryActive(y >= metrics.viewport * 0.65);
       if (heroRef.current) {
-        const opacity = Math.max(0, 1 - y / (window.innerHeight * 0.65));
+        const opacity = Math.max(0, 1 - y / (metrics.viewport * 0.65));
         heroRef.current.style.opacity = String(opacity);
         heroRef.current.inert = opacity === 0;
       }
@@ -123,6 +132,7 @@ export default function Home() {
     const reset = () => { controls.resetPointer(); touchId = null; };
     const down = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse' && e.isPrimary) {
+        scrubber.prime();
         touchId = e.pointerId;
         controls.resetPointer();
         controls.movePointer(e.clientX, window.innerWidth);
@@ -137,6 +147,7 @@ export default function Home() {
     const visibility = () => { reset(); video.pause(); };
     window.addEventListener('scroll', scroll, { passive: true });
     window.addEventListener('resize', scroll);
+    window.visualViewport?.addEventListener('resize', scroll);
     scroll();
     window.addEventListener('pointermove', move, { passive: true });
     window.addEventListener('pointerdown', down, { passive: true });
@@ -149,6 +160,7 @@ export default function Home() {
       scrubber.destroy(); controlsRef.current = null;
       window.removeEventListener('scroll', scroll);
       window.removeEventListener('resize', scroll);
+      window.visualViewport?.removeEventListener('resize', scroll);
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerdown', down);
       window.removeEventListener('pointerup', up);
