@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-:root { --background:#231016; --foreground:#fff; --muted-foreground:#e0d8d4; --accent:#e7edc3; --border:#ffffff38; --font-sans:Arial,sans-serif; }
+:root { --background:#231016; --foreground:#fff; --muted-foreground:#e0d8d4; --accent:#e7edc3; --border:#ffffff38; --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; scrollbar-width:none; }
 html::-webkit-scrollbar { display:none; }
